@@ -1,0 +1,220 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link href="~/root/dist/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="~/root/dist/css/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/root/dist/css/tooplate.css" rel="stylesheet" />
+    <link href="~/root/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 40%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+    </style>
+</head>
+
+<body id="reportsPage">
+    <div class="" id="home">
+        <div class="row tm-content-row tm-mt-big">
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block h-100 ">
+                    <h2 class="tm-block-title">Últimos éxitos</h2>
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block h-100">
+                    <h2 class="tm-block-title">Rendimiento </h2>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+            <div class="tm-col tm-col-small">
+                <div class="bg-white tm-block h-100">
+                    <h2 class="tm-block-title">Tu Sistema</h2>
+                    <canvas id="pieChart" class="chartjs-render-monitor"></canvas>
+                </div>
+            </div>
+
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block h-100">
+                    <div class="row">
+                        <div class="col-8">
+                            <h2 class="tm-block-title d-inline-block">Proyectos Relevantes</h2>
+
+                        </div>
+                        <div class="col-4 text-right">
+                            <a href="products.html" class="tm-link-black">verlos todos</a>
+                        </div>
+                    </div>
+                    <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">
+                        <li class="tm-list-group-item">
+                            Desarrollo de Software Empresaria
+                        </li>
+                        <li class="tm-list-group-item">
+                            Construcción de un Edificio Comercial
+                        </li>
+                        <li class="tm-list-group-item">
+                            Rendimiento de Systema
+                        </li>
+                        <li class="tm-list-group-item">
+                            Implementacion en Manejo de Errores
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="tm-col tm-col-big">
+                <div class="bg-white tm-block h-100">
+                    <h2 class="tm-block-title">Calendar</h2>
+                    <div id="calendar"></div>
+                    <div class="row mt-4">
+                        <div class="col-12 text-right">
+                            <!--  -->
+                            <!--   <a href="#" class="tm-link-black">View Schedules</a> -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="tm-col tm-col-small">
+                <div class="bg-white tm-block h-100">
+                    <h2 class="tm-block-title">Tareas Pendientes</h2>
+                    <button id="openModal" class="btn btn-primary">Agregar Tarea</button>
+                    <ol id="tareasList" class="tm-list-group">
+                        @foreach (var tarea in Model)
+                        {
+                            <li class="tm-list-group-item">
+                                <strong>@tarea.Nombre</strong> - Prioridad: @tarea.Prioridad<br />
+                                Descripción: @tarea.Descripcion
+                            </li>
+                        }
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventana emergente -->
+        <div id="taskModal" class="modal">
+            <div class="modal-content">
+                <span id="closeModal" class="close">&times;</span>
+                <h2>Agregar Tarea</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre:</label>
+                        <input type="text" id="Nombre" name="Nombre" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Prioridad">Prioridad:</label>
+                        <input type="text" id="Prioridad" name="Prioridad" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Descripcion">Descripción:</label>
+                        <textarea id="Descripcion" name="Descripcion" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="TiempoInvertido">Tiempo Invertido (en horas):</label>
+                        <input type="number" id="TiempoInvertido" name="TiempoInvertido" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+
+        <script src="~/root/dist/js/jquery-3.3.1.min.js"></script>
+        <script src="~/root/dist/js/moment.min.js"></script>
+        <script src="~/root/dist/js/utils.js"></script>
+        <script src="~/root/dist/js/Chart.min.js"></script>
+        <script src="~/root/dist/js/fullcalendar.min.js"></script>
+        <script src="~/root/dist/js/bootstrap.min.js"></script>
+        <script src="~/root/dist/js/tooplate-scripts.js"></script>
+
+        <script>
+            $(document).ready(function () {
+                var modal = $('#taskModal');
+                var btn = $('#openModal');
+                var span = $('#closeModal');
+
+                // Abre la ventana modal
+                btn.click(function () {
+                    modal.show();
+                });
+
+                // Cierra la ventana modal
+                span.click(function () {
+                    modal.hide();
+                });
+
+                // Cierra la ventana modal al hacer clic fuera de ella
+                $(window).click(function (event) {
+                    if ($(event.target).is(modal)) {
+                        modal.hide();
+                    }
+                });
+
+                // controlador formulario del modal
+                $('#taskForm').submit(function (event) {
+                    event.preventDefault();
+                    var formData = $(this).serialize();
+                    $.ajax({
+                        url: '@Url.Action("AgregarTarea", "Home")',
+                        type: 'POST',
+                        data: formData,
+                        success: function (response) {
+                            if (response.success) {
+                                alert('Tarea agregada con éxito');
+                                modal.hide();
+
+                            } else {
+                                alert('Error: ' + response.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Error al procesar la solicitud');
+                        }
+                    });
+                });
+            });
+        </script>
+</body>
+
+</html>

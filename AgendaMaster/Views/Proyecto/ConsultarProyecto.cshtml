@@ -1,0 +1,91 @@
+﻿@model List<AgendaMaster.BaseDatos.Proyectos>
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Consulta de Proyecto";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Proyectos</title>
+
+    <link href="~/root/dist/css/fullcalendar.min.css" rel="stylesheet" />
+    <!--
+    <!--  http://www.tooplate.com/view/2108-dashboard -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <!-- https://fonts.google.com/specimen/Open+Sans -->
+    <link href="~/root/dist/css/fontawesome.min.css" rel="stylesheet" />
+    <!-- https://fontawesome.com/ -->
+    <link href="~/root/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- https://getbootstrap.com/ -->
+    <link href="~/root/dist/css/tooplate.css" rel="stylesheet" />
+
+</head>
+
+<body id="reportsPage" class="bg02">
+    <div class="" id="home">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <br>
+                    <a href="@Url.Action("Index", "Home")" data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-lg">Regresar al inicio</a>
+                </div>
+            </div>
+
+            <nav class="navbar navbar-expand-xl navbar-light bg-info">
+                <a class="navbar-brand" href="index.html">
+
+                    <h2 class="tm-block-title" style="color: white;">Consulta de Proyectos</h2>
+                </a>
+            </nav>
+            <table class="table align-middle mb-0 bg-white">
+                <thead class="bg-light">
+                    <tr class="table-secondary">
+                        <th>Nombre del Proyecto</th>
+                        <th>Descripcion</th>
+                        <th>Fecha de Creacion</th>
+                        <th>Estatus</th>
+                        @*<th>Editar</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.NombreProyecto</td>
+                            <td>@item.Descripcion</td>
+                            <td>@item.FechaCreacion</td>
+                            <td>@item.Estatus</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+
+
+    <script src="~/root/dist/js/jquery-3.3.1.min.js"></script>
+    <!-- https://jquery.com/download/ -->
+    <script src="~/root/dist/js/bootstrap.min.js"></script>
+    <!-- https://getbootstrap.com/ -->
+    <script>
+        $(function () {
+            $('.tm-product-name').on('click', function () {
+                window.location.href = "edit-product.html";
+            });
+        })
+    </script>
+</body>
+
+</html>
