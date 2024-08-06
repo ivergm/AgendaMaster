@@ -1,0 +1,121 @@
+﻿@model AgendaMaster.Entidades.Proyecto
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Registro de Proyecto";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Proyectos</title>
+
+    <link href="~/root/dist/css/fullcalendar.min.css" rel="stylesheet" />
+    <!--
+    <!--  http://www.tooplate.com/view/2108-dashboard -->
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <!-- https://fonts.google.com/specimen/Open+Sans -->
+    <link href="~/root/dist/css/fontawesome.min.css" rel="stylesheet" />
+    <!-- https://fontawesome.com/ -->
+    <link href="~/root/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- https://getbootstrap.com/ -->
+    <link href="~/root/dist/css/tooplate.css" rel="stylesheet" />
+
+</head>
+
+<body id="reportsPage" class="bg02">
+    <div class="" id="home">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav class="navbar navbar-expand-xl navbar-light bg-info">
+                        <a class="navbar-brand" href="index.html">
+
+                            <h2 class="tm-block-title" style="color: white;">Maneja Tus Proyectos</h2>
+
+
+                        </a>
+
+                    </nav>
+                    <br>
+                    <a href="@Url.Action("Index", "Home")" data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-lg">Regresar al inicio</a>
+                </div>
+            </div>
+            <!-- row -->
+            <div class="row justify-content-center">
+                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+                    <div class="border border-2 rounded p-4 bg-white">
+                        <h2 class="tm-block-title text-center fw-bold mb-5 mx-1 mx-md-4 mt-4">Agrega tu Proyecto</h2>
+
+
+
+                        <!-- empieza el form-->
+                        @using (Html.BeginForm("RegistroProyecto", "Proyecto"))
+                        {
+                            <!-- Nombre proyecto-->
+
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 col-md-6 mb-5 mx-1 mx-md-4 mt-4">
+                                        <div class="form-outline flex-fill mb-0">
+                                            @Html.TextBoxFor(A => A.NombreProyecto, new { @type = "text", @class = "form-control", @placeholder = "Ingrese el nombre de su proyecto" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Descricion-->
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 col-md-6 mb-5 mx-1 mx-md-4 mt-4">
+                                        <div class="form-outline flex-fill mb-0">
+                                            @Html.TextBoxFor(A => A.Descripcion, new { @type = "descripcion", @class = "form-control", @placeholder = "Ingrese descripción" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fecha-->
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 col-md-6 mb-5 mx-1 mx-md-4 mt-4">
+                                        <div class="form-outline flex-fill mb-0">
+                                            <!-- Aquí puedes colocar el contenido de tu caja -->
+                                            @Html.TextBoxFor(A => A.FechaCreacion, new { @type = "date", @class = "form-control", @placeholder = "Ingrese la fecha" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Estatus-->
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-12 col-md-6 mb-5 mx-1 mx-md-4 mt-4">
+                                        <div class="form-outline flex-fill mb-0">
+                                            @Html.DropDownListFor(A => A.Estatus, new SelectList(new List<string> { "Activo", "Inactivo" }), new { @class = "form-control" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-info btn-lg">Agregar</button>
+                                <br>
+                            </div>
+                            <br>
+                            <br>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            

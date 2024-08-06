@@ -1,0 +1,387 @@
+﻿@model AgendaMaster.ViewModels.AdminViewModel
+@{
+    ViewBag.Title = "Admin Page";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    <link href="~/root/dist/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="~/root/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #000;
+        }
+
+            .navbar .navbar-brand,
+            .navbar .nav-link {
+                color: #fff;
+            }
+
+        .banner {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .card-text {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .tm-list-group-item {
+            padding: 15px;
+            font-size: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+        /* Estilos para el modal */
+        .modal {
+            display: none; /* Oculta el modal por defecto */
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        /* Estilos para el contenido del modal */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Ajusta el ancho del modal aquí */
+            max-width: 600px; /* Ajusta el ancho máximo del modal aquí */
+        }
+
+        /* Botón de cerrar */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">Admin Dashboard</a>
+    </nav>
+
+    <div class="banner">
+        Acceso Restringido para Administradores
+    </div>
+
+    <<div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Administrar Usuarios</h5>
+        </div>
+        <div class="card-body">
+            <ul class="list-group">
+                @foreach (var usuario in Model.Usuarios)
+                {
+                    <li class="list-group-item">
+                        <strong>@usuario.Nombre</strong> - Rol: @usuario.Rol<br />
+                        Email: @usuario.Email
+                        <br />
+                        <button class="btn btn-warning btn-sm edit-user"
+                                data-id="@usuario.IdUsuario"
+                                data-nombre="@usuario.Nombre"
+                                data-apellidos="@usuario.Apellidos"
+                                data-cedula="@usuario.Cedula"
+                                data-email="@usuario.Email"
+                                data-rol="@usuario.Rol"
+                                data-contrasenna="@usuario.Contrasenna">
+                            Editar
+                        </button>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- Ventana emergente para edición de usuario -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content custom-modal-size">
+            <span id="closeEditModal" class="close">&times;</span>
+            <h2>Editar Usuario</h2>
+            <form id="editUserForm">
+                <input type="hidden" id="editIdUsuario" name="IdUsuario" />
+                <div class="form-group">
+                    <label for="editNombre">Nombre:</label>
+                    <input type="text" id="editNombre" name="Nombre" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="editApellidos">Apellidos:</label>
+                    <input type="text" id="editApellidos" name="Apellidos" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="editCedula">Cédula:</label>
+                    <input type="text" id="editCedula" name="Cedula" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" name="Email" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="editRol">Rol:</label>
+                    <input type="text" id="editRol" name="Rol" class="form-control" required />
+                </div>
+                <div class="form-group">
+                    <label for="editContrasenna">Contraseña:</label>
+                    <input type="password" id="editContrasenna" name="Contrasenna" class="form-control" required />
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <button type="button" id="cancelEdit" class="btn btn-secondary">Cancelar</button>
+            </form>
+
+        </div>
+    </div>
+
+
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Rendimiento</h5>
+                        <p class="card-text">Visualiza el rendimiento del sistema y realiza ajustes.</p>
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Proyectos Relevantes</h5>
+                        <ol class="tm-list-group tm-list-group-alternate-color tm-list-group-pad-big">
+                            <li class="tm-list-group-item">
+                                Desarrollo de Software Empresarial
+                            </li>
+                            <li class="tm-list-group-item">
+                                Construcción de un Edificio Comercial
+                            </li>
+                            <li class="tm-list-group-item">
+                                Rendimiento de Sistema
+                            </li>
+                            <li class="tm-list-group-item">
+                                Implementación en Manejo de Errores
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Tareas Pendientes</h5>
+                        <button id="openModal" class="btn btn-primary mb-3">Agregar Tarea</button>
+                        <ol id="tareasList" class="tm-list-group">
+                            @foreach (var tarea in Model.Tareas)
+                            {
+                                <li class="tm-list-group-item">
+                                    <strong>@tarea.Nombre</strong> - Prioridad: @tarea.Prioridad<br />
+                                    Descripción: @tarea.Descripcion
+                                </li>
+                            }
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventana emergente -->
+        <div id="taskModal" class="modal">
+            <div class="modal-content">
+                <span id="closeModal" class="close">&times;</span>
+                <h2>Agregar Tarea</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="Nombre">Nombre:</label>
+                        <input type="text" id="Nombre" name="Nombre" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Prioridad">Prioridad:</label>
+                        <input type="text" id="Prioridad" name="Prioridad" class="form-control" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="Descripcion">Descripción:</label>
+                        <textarea id="Descripcion" name="Descripcion" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="TiempoInvertido">Tiempo Invertido (en horas):</label>
+                        <input type="number" id="TiempoInvertido" name="TiempoInvertido" class="form-control" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="~/root/dist/js/jquery-3.3.1.min.js"></script>
+    <script src="~/root/dist/js/moment.min.js"></script>
+    <script src="~/root/dist/js/utils.js"></script>
+    <script src="~/root/dist/js/Chart.min.js"></script>
+    <script src="~/root/dist/js/bootstrap.min.js"></script>
+    
+
+    <script>
+    $(document).ready(function () {
+    var editModal = $('#editUserModal');
+    var closeEditModal = $('#closeEditModal');
+    var cancelEdit = $('#cancelEdit');
+
+    // Abre la ventana modal de edición con los datos del usuario
+    $('.edit-user').click(function () {
+        $('#editIdUsuario').val($(this).data('id'));
+        $('#editNombre').val($(this).data('nombre'));
+        $('#editApellidos').val($(this).data('apellidos'));
+        $('#editCedula').val($(this).data('cedula'));
+        $('#editEmail').val($(this).data('email'));
+        $('#editRol').val($(this).data('rol'));
+        $('#editContrasenna').val($(this).data('contrasenna'));
+        editModal.show();
+    });
+
+    // Cierra la ventana modal de edición
+    closeEditModal.click(function () {
+        editModal.hide();
+    });
+
+    cancelEdit.click(function () {
+        editModal.hide();
+    });
+
+    // Enviar el formulario de edición
+    $('#editUserForm').submit(function (event) {
+        event.preventDefault();
+
+        // Obtener el valor del campo oculto
+        var idUsuario = $('#editIdUsuario').val();
+
+        // Verificar que IdUsuario no esté vacío
+        if (!idUsuario) {
+            alert('El ID del usuario no está disponible.');
+            return;
+        }
+
+        // Serializar los datos del formulario
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: '@Url.Action("EditarUsuario", "Home")',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    alert('Usuario actualizado con éxito');
+                    editModal.hide();
+                    location.reload(); // Recargar la página para ver los cambios
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function () {
+                alert('Error al procesar la solicitud');
+            }
+        });
+    });
+});
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            var modal = $('#taskModal');
+            var btn = $('#openModal');
+            var span = $('#closeModal');
+
+            // Abre la ventana modal
+            btn.click(function () {
+                modal.show();
+            });
+
+            // Cierra la ventana modal
+            span.click(function () {
+                modal.hide();
+            });
+
+            // Cierra la ventana modal al hacer clic fuera de ella
+            $(window).click(function (event) {
+                if ($(event.target).is(modal)) {
+                    modal.hide();
+                }
+            });
+
+            // controlador formulario del modal
+            $('#taskForm').submit(function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: '@Url.Action("AgregarTarea", "Home")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            alert('Tarea agregada con éxito');
+                            modal.hide();
+
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error al procesar la solicitud');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
